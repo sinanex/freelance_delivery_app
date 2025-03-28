@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController shopnameController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   @override
   void initState() {
@@ -238,6 +239,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   text: 'Location',
                   controller: locationController,
                 ),
+                 const SizedBox(height: 16),
+                customTextField(
+                  text: 'Location',
+                  controller: phoneController,
+                ),
               ],
             ),
           ),
@@ -251,6 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (shopnameController.text.trim().isNotEmpty &&
                     locationController.text.trim().isNotEmpty) {
                   final data = ShopModel(
+                    phone: phoneController.text.trim(),
                     location: locationController.text.trim(),
                     shopname: shopnameController.text.trim(),
                   );

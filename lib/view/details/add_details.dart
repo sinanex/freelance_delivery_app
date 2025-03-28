@@ -42,6 +42,7 @@ class _AddDetailsState extends State<AddDetails> {
       DataServices().addAllData(
         shopname: widget.shopname,
         data: Model(
+          type: context.read<DateController>().selected,
           location: widget.location,
           shopname: widget.shopname,
           date: context.read<DataController>().dateController.text.trim(),
@@ -92,7 +93,6 @@ class _AddDetailsState extends State<AddDetails> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        
         backgroundColor: themeColor,
         elevation: 0,
         title: Text(
@@ -148,7 +148,6 @@ class _AddDetailsState extends State<AddDetails> {
   }
 
   Widget _buildForm() {
-    List<String> types = ['Bharath Gas', 'Green Gas', 'Go Gas'];
     return Container(
       padding: EdgeInsets.all(20),
       child: Form(

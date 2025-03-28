@@ -1,10 +1,13 @@
+import 'dart:developer';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gas/controller/data_controller.dart';
 import 'package:gas/model/shop_model.dart';
 import 'package:gas/view/details/add_details.dart';
+import 'package:gas/view/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsScreen extends StatefulWidget {
   final ShopModel data;
@@ -18,7 +21,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<DataController>().getAllDAta(widget.data.shopname,widget.data.location);
+    context.read<DataController>().getAllDAta(
+      widget.data.shopname,
+      widget.data.location,
+    );
   }
 
   @override
@@ -57,57 +63,78 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
         toolbarHeight: 80,
         actions: [
-         IconButton(
-  onPressed: () async {
-    final result = await showCalendarDatePicker2Dialog(
-      value: [],
-      context: context,
-      config: CalendarDatePicker2WithActionButtonsConfig(
-        calendarType: CalendarDatePicker2Type.range,
-      ),
-      dialogSize: Size(MediaQuery.of(context).size.width * 0.8, 400),
-    );
+          IconButton(
+            onPressed: () async {
+              final Uri phoneUri = Uri.parse("tel:+91${widget.data.phone}");
+              if (await canLaunchUrl(phoneUri)) {
+                await launchUrl(phoneUri);
+              } else {
+                log("Could not launch phone call");
+              }
+            },
+            icon: Icon(Icons.phone),
+          ),
+          IconButton(
+            onPressed: () async {
+              final result = await showCalendarDatePicker2Dialog(
+                value: [],
+                context: context,
+                config: CalendarDatePicker2WithActionButtonsConfig(
+                  calendarType: CalendarDatePicker2Type.range,
+                ),
+                dialogSize: Size(MediaQuery.of(context).size.width * 0.8, 400),
+              );
 
-    if (result != null) {
-            // ignore: use_build_context_synchronously
-            // context.read<DataController>().filterDataByDate(result as List<DateTime>);
-    }
-  },
-  icon: Icon(Icons.calendar_month),
-),
+              if (result != null) {}
+            },
+            icon: Icon(Icons.calendar_month),
+          ),
         ],
         elevation: 0,
         backgroundColor: Color.fromARGB(255, 247, 196, 69),
       ),
-      body: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: EdgeInsets.only(right: 16, top: 10),
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0XFFFFBF1B),
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              AddDetails(shopname: widget.data.shopname,location: widget.data.location,),
+      body: Consumer<DataController>(
+        builder:
+            (context, value, child) =>
+                value.isLoading
+                    ? Center(
+                      child: Container(
+                        color: Colors.white,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                    : Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 16, top: 10),
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0XFFFFBF1B),
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => AddDetails(
+                                          shopname: widget.data.shopname,
+                                          location: widget.data.location,
+                                        ),
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.add),
+                              label: Text("ADD"),
+                            ),
+                          ),
+                        ),
+                        _buildDataList(),
+                        _buildBottomContainer(),
+                      ],
                     ),
-                  );
-                },
-                icon: Icon(Icons.add),
-                label: Text("ADD"),
-              ),
-            ),
-          ),
-          _buildDataList(),
-          _buildBottomContainer(),
-        ],
       ),
     );
   }
@@ -148,10 +175,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
               final data = value.allData[index];
               final int fullGas = int.parse(data.fullGas);
               final int emptyGas = int.parse(data.emptygas);
-              final int balance = fullGas - emptyGas;
+
               final int amount = int.parse(data.amount);
               final int receipt = int.parse(data.recipt);
               final int ob = receipt - amount;
+              final String type = data.type;
 
               return Card(
                 color: Colors.white,
@@ -176,31 +204,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               color: Colors.blue[800],
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  balance > 0
-                                      ? Colors.green[50]
-                                      : Colors.red[50],
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: balance > 0 ? Colors.green : Colors.red,
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              'Balance: $balance',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color:
-                                    balance > 0
-                                        ? Colors.green[700]
-                                        : Colors.red[700],
-                              ),
+
+                          Text(
+                            type,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[700],
                             ),
                           ),
                         ],
@@ -311,13 +320,21 @@ class _DetailsScreenState extends State<DetailsScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: Text(
-                  "Summary",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[800],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Summary",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[800],
+                      ),
+                    ),
+                    IconButton(onPressed: (){
+                      gasSummaryUpdate(context);
+                    }, icon: Icon(Icons.edit,color: Colors.blue,))
+                  ],
                 ),
               ),
               Row(
@@ -415,4 +432,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
     );
   }
+  
+
 }

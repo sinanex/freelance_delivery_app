@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class DateController extends ChangeNotifier {
-   String selected = 'Bharath gas';
+  String selected = 'Bharath Gas'; 
 
-
-   void changeDropDownValue(String value){
-     selected = value;
-     notifyListeners();
-   }
+  void changeDropDownValue(String value) {
+    selected = value;
+    notifyListeners();
+  }
 }

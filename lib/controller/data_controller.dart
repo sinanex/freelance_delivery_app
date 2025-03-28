@@ -29,6 +29,8 @@ class DataController extends ChangeNotifier {
   }
 
   void getAllDAta(String shopname, String location) async {
+    isLoading = true;
+    notifyListeners();
     try {
       allData = await service.getDataFromFireBase(
         shopname: shopname,
@@ -36,6 +38,8 @@ class DataController extends ChangeNotifier {
       );
     } catch (e) {
       log(e.toString());
+    } finally {
+      isLoading = false;
     }
     notifyListeners();
   }

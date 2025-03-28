@@ -11,12 +11,12 @@ Widget customTextField({
   TextInputType keyboardType = TextInputType.text,
   String? Function(String?)? validator,
   FocusNode? focusNode,
-  bool? readOnly
+  bool? readOnly,
 }) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 10),
     child: TextFormField(
-      readOnly: readOnly??false,
+      readOnly: readOnly ?? false,
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
@@ -26,16 +26,23 @@ Widget customTextField({
       decoration: InputDecoration(
         hintText: text,
         labelText: labelText,
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.blue.shade700) : null,
-        suffixIcon: suffixIcon != null 
-            ? IconButton(
-                icon: Icon(suffixIcon, color: Colors.blue.shade700),
-                onPressed: onSuffixIconPressed,
-              ) 
-            : null,
+        prefixIcon:
+            prefixIcon != null
+                ? Icon(prefixIcon, color: Colors.blue.shade700)
+                : null,
+        suffixIcon:
+            suffixIcon != null
+                ? IconButton(
+                  icon: Icon(suffixIcon, color: Colors.blue.shade700),
+                  onPressed: onSuffixIconPressed,
+                )
+                : null,
         filled: true,
         fillColor: Colors.grey.shade100,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 20,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
@@ -60,7 +67,6 @@ Widget customTextField({
     ),
   );
 }
-
 
 Widget customElevatedButton({
   required VoidCallback onPressed,
@@ -89,37 +95,37 @@ Widget customElevatedButton({
         elevation: 3,
         shadowColor: backgroundColor.withOpacity(0.5),
       ),
-      child: isLoading
-          ? SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(textColor),
-              ),
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (icon != null) ...[
-                  Icon(icon, size: 20),
-                  const SizedBox(width: 8),
-                ],
-                Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
+      child:
+          isLoading
+              ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(textColor),
                 ),
-              ],
-            ),
+              )
+              : Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+                    Icon(icon, size: 20),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
     ),
   );
 }
-
 
 class StandardSearchBar extends StatefulWidget {
   final ValueChanged<String>? onChanged;
@@ -153,17 +159,18 @@ class _StandardSearchBarState extends State<StandardSearchBar> {
         decoration: InputDecoration(
           hintText: widget.hintText,
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
-          suffixIcon: _searchController.text.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.grey),
-                  onPressed: () {
-                    _searchController.clear();
-                    widget.onClear?.call();
-                    widget.onChanged?.call('');
-                    setState(() {});
-                  },
-                )
-              : null,
+          suffixIcon:
+              _searchController.text.isNotEmpty
+                  ? IconButton(
+                    icon: const Icon(Icons.clear, color: Colors.grey),
+                    onPressed: () {
+                      _searchController.clear();
+                      widget.onClear?.call();
+                      widget.onChanged?.call('');
+                      setState(() {});
+                    },
+                  )
+                  : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16.0,
@@ -212,4 +219,14 @@ class SearchBarExample extends StatelessWidget {
   }
 }
 
-
+void gasSummaryUpdate(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(backgroundColor: Colors.white, actions: [
+          
+        ],
+      );
+    },
+  );
+}

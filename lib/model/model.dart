@@ -7,9 +7,11 @@ class Model {
   String emptygas;
   String shopname;
   String location;
+  String type;
 
   Model({
     this.id,
+    required this.type,
     required this.shopname,
     required this.location,
     required this.date,
@@ -22,6 +24,7 @@ class Model {
   factory Model.fromJson(Map<String, dynamic> json, String id) {
     return Model(
       id: id,
+      type: json['type'] ?? '',
       shopname: json['shopname'] ?? '',
       location: json['location'] ?? '',
       date: json['date'] ?? 'null',
@@ -29,7 +32,6 @@ class Model {
       recipt: json['recipt'] ?? '',
       fullGas: json['fullGas'] ?? '',
       emptygas: json['emptygas'] ?? '',
-
     );
   }
 
@@ -42,6 +44,7 @@ class Model {
       'emptygas': emptygas,
       'location': location,
       'shopname': shopname,
+      'type': type,
     };
   }
 }
